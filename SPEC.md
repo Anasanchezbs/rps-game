@@ -27,7 +27,15 @@ Results are from the **player’s perspective**. `determine_winner(player, compu
 
 ### Agreed plan
 
-Before implementation, predict one matchup and explain it with your local coding agent. Discuss a short plan and checks. Once it makes sense, ask the agent to replace this paragraph with the agreed plan, preserving the expected results above. Continue in the same chat.
+- **Prediction:** Player paper vs. computer rock → `win`, because paper covers rock. This matches the expected results table.
+- **Scope:** Implement `determine_winner(player, computer)` in `game.py`. It returns `win`, `lose`, or `tie` from the player's perspective, matching the nine expected results above. Keep the supplied interface and server. No scoring, storage, accounts, new framework, or AI API.
+- **Valid losing round (positive case):** Player scissors vs. computer rock → `lose`, because rock crushes scissors. This is a normal, correct result, not an error.
+- **Rejected input (negative case):** A missing move or an unsupported move such as `lizard` → HTTP 400 with a helpful message, without calling the rules.
+- **Tests:**
+  - Unit (`unit` marker): all nine results written out literally in `tests/test_game.py`.
+  - Integration (`integration` marker): submit a real round with the computer's move fixed, then check that both choices and the correct result appear. Reuse the supplied 400 tests for bad input.
+  - E2E (`e2e` marker): in `tests/e2e/test_round.py`, a real browser plays a round, checks the result, then plays again. Only the computer's move is fixed; the real rules are used.
+- **Done when:** the full `.venv/bin/python check.py` passes (not `--fast`), the diff has been reviewed, and no checks were weakened.
 
 ### Checks
 
@@ -44,7 +52,13 @@ Use `unit`, `integration`, and `e2e` pytest markers. Run `.venv/bin/python check
 
 ### Work record
 
-- Issue: add your own issue URL.
-- Pull request / CI: add actual URLs when they exist.
-- Implementation: **Not implemented.** The shell is supplied; `game.py` is unfinished.
-- Checks: **Rules not verified.** Supplied request/browser tests cover the shell only. After implementation, record actual full-check results and your browser observations here; put detailed results in the PR. Passing formatting and analysis alone is not evidence of correct rules.
+- Issue: https://github.com/Anasanchezbs/rps-game/issues/1
+- Pull request: https://github.com/Anasanchezbs/rps-game/pull/2
+- CI run: https://github.com/Anasanchezbs/rps-game/actions/runs/41953673691 (Python checks passed)
+- Implementation: `game.py` implements `determine_winner(player, computer)` using a table of which move beats which. The supplied interface and server are unchanged.
+- Tests: `tests/test_game.py` (nine literal unit cases plus an integration round that uses the real rules) and `tests/e2e/test_round.py` (real-browser round and replay). The supplied missing/invalid-move tests in `tests/test_shell.py` were kept and still pass (HTTP 400).
+- Full local check (`.venv/bin/python check.py`): Black PASS (11 files), Pylint PASS, non-browser pytest 25 passed, Chromium browser 6 passed. Before the final run, Black and Pylint caught a missing final newline and duplicated test lines, which were fixed without weakening any checks.
+- One test explained: `("scissors", "rock", "lose")` checks that scissors loses to rock. It would catch rules written backwards, such as comparing the computer's move against the player's.
+- Played round: I chose rock, the computer chose paper → "Computer wins." This is correct because paper covers rock. Earlier, scissors vs. scissors → "It's a tie," because the moves matched.
+- Keyboard/replay: In Safari, Option + Tab moved between the buttons and Enter played a round (plain Tab only focused the address bar). Choosing again started a new, independent round.
+- Help received: Used Claude to understand the workflow and to draft the rule function, tests, and this record. I reviewed them, ran the checks, and played the game myself.
