@@ -53,7 +53,8 @@ Use `unit`, `integration`, and `e2e` pytest markers. Run `.venv/bin/python check
 ### Work record
 
 - Issue: https://github.com/Anasanchezbs/rps-game/issues/1
-- Pull request / CI: add actual URLs when they exist.
+- Pull request: https://github.com/Anasanchezbs/rps-game/pull/2
+- CI run: https://github.com/Anasanchezbs/rps-game/actions/runs/41953673691 (Python checks passed)
 - Implementation: `game.py` implements `determine_winner(player, computer)` using a table of which move beats which. The supplied interface and server are unchanged.
 - Tests: `tests/test_game.py` (nine literal unit cases plus an integration round that uses the real rules) and `tests/e2e/test_round.py` (real-browser round and replay). The supplied missing/invalid-move tests in `tests/test_shell.py` were kept and still pass (HTTP 400).
 - Full local check (`.venv/bin/python check.py`): Black PASS (11 files), Pylint PASS, non-browser pytest 25 passed, Chromium browser 6 passed. Before the final run, Black and Pylint caught a missing final newline and duplicated test lines, which were fixed without weakening any checks.
